@@ -5,7 +5,7 @@
 #
 
 # from https://www.drupal.org/docs/system-requirements/php-requirements
-FROM php:8.0-fpm-alpine3.12
+FROM php:8.0-fpm-alpine3.12 as base
 
 # install the PHP extensions we need
 RUN set -eux; \
@@ -51,6 +51,8 @@ RUN { \
 		echo 'opcache.revalidate_freq=60'; \
 		echo 'opcache.fast_shutdown=1'; \
 	} > /usr/local/etc/php/conf.d/opcache-recommended.ini
+
+FROM base as build
 
 COPY --from=composer:2.0 /usr/bin/composer /usr/local/bin/
 

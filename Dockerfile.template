@@ -3,7 +3,7 @@
 		env.variant | index("alpine")
 -}}
 # from https://www.drupal.org/docs/system-requirements/php-requirements
-FROM php:{{ env.phpVersion }}-{{ env.variant }}
+FROM php:{{ env.phpVersion }}-{{ env.variant }} as base
 
 # install the PHP extensions we need
 RUN set -eux; \
@@ -81,6 +81,8 @@ RUN { \
 		echo 'opcache.revalidate_freq=60'; \
 		echo 'opcache.fast_shutdown=1'; \
 	} > /usr/local/etc/php/conf.d/opcache-recommended.ini
+
+FROM base as build
 
 {{ if env.version | startswith("7") then "" else ( -}}
 COPY --from=composer:{{ .composer.version }} /usr/bin/composer /usr/local/bin/

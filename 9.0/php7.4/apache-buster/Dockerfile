@@ -5,7 +5,7 @@
 #
 
 # from https://www.drupal.org/docs/system-requirements/php-requirements
-FROM php:7.4-apache-buster
+FROM php:7.4-apache-buster as base
 
 # install the PHP extensions we need
 RUN set -eux; \
@@ -61,6 +61,8 @@ RUN { \
 		echo 'opcache.revalidate_freq=60'; \
 		echo 'opcache.fast_shutdown=1'; \
 	} > /usr/local/etc/php/conf.d/opcache-recommended.ini
+
+FROM base as build
 
 COPY --from=composer:1.10 /usr/bin/composer /usr/local/bin/
 
